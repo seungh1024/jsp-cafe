@@ -116,7 +116,16 @@
             timeout: 1500,
             success: function (data) {
                 console.log(data);
-                // loadCommentList(lastCreated, lastCommentId);
+
+                var moreDiv = document.querySelector('#more');
+                moreDiv.innerHTML = '';
+                var button = document.createElement('button');
+                button.innerText = '더보기';
+                button.className = 'btn btn-primary pull-right';
+                button.addEventListener('click', function(){
+                    loadCommentList(lastCreated, lastCommentId);
+                })
+                moreDiv.appendChild(button);
             },
             error: function (request, status, error) {
 
@@ -203,7 +212,7 @@
 <%-- 게시글 삭제 --%>
 <script>
 
-    function deleteComment(commentId){
+    function deleteComment(event,commentId){
         console.log(commentId);
         $.ajax({
             url: '/ajax/comment',
@@ -215,7 +224,11 @@
                 commentId: commentId
             }),
             success: function () {
-                loadCommentList();
+                var commentDiv = event.target.closest('.article');
+                if (commentDiv) {
+                    commentDiv.remove();
+                }
+                loadCommentList(lastCreated, lastCommentId);
             },
             error: function (request, status, error) {
                 console.log(error);
@@ -245,7 +258,7 @@
                     <form class="delete-answer-form">
                         <input type="hidden" name="_method" value="DELETE">
                     </form>
-                    <button type="submit" class="delete-answer-button" id="commentDelete{commentId}" onclick="deleteComment({commentId})">삭제</button>
+                    <button type="submit" class="delete-answer-button" id="commentDelete{commentId}" onclick="deleteComment(event,{commentId})">삭제</button>
                 </li>
             </ul>
         </div>

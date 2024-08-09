@@ -11,8 +11,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CommentService {
+
     private static final CommentService instance = new CommentService();
+    private static final Logger log = LoggerFactory.getLogger(CommentService.class);
+
     private CommentService() {}
     public static CommentService getInstance() {
         return instance;
@@ -36,6 +42,7 @@ public class CommentService {
 
     public void delete(long commentId) {
         var result = CommentRepository.getInstance().deleteOne(commentId);
+        log.debug("result = {}", result);
         if (result == 0) {
             throw ClientErrorCode.COMMENT_IS_NULL.customException("comment id = " + commentId);
         }
