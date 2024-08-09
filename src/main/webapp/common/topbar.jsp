@@ -48,7 +48,7 @@
                 <%
                     if(loginInfo != null){
                 %>
-                <li><a href="/api/users/info?userId=<%=loginInfo.getUserId()%>"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="/api/users/profile?userId=<%=loginInfo.getId()%>"><i class="glyphicon glyphicon-user"></i></a></li>
                 <%
                     }else{
                 %>

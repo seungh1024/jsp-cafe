@@ -2,11 +2,13 @@ package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.common.exception.ClientErrorCode;
+import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.common.session.SessionManager;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
 import codesquad.javacafe.member.service.MemberService;
+import codesquad.javacafe.post.cache.PostCache;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +28,8 @@ public class MemberInfoController implements SubController {
         switch(method){
             case "GET" : {
                 var userId = req.getParameter("userId");
-                SessionManager.getInstance().loginCheck(req,"loginInfo", userId);
+                req.setAttribute("userId", userId);
+                SessionManager.getInstance().loginCheck(req,"loginInfo");
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/memberInfo.jsp");
                 dispatcher.forward(req, res);
                 break;
@@ -46,7 +49,9 @@ public class MemberInfoController implements SubController {
     private void updateMember(HttpServletRequest req) {
         var body = req.getParameterMap();
         var memberDto = new MemberUpdateRequestDto(body);
-        SessionManager.getInstance().loginCheck(req,"loginInfo", memberDto.getUserId());
+        MemberInfo memberInfo = SessionManager.getInstance().loginCheck(req, "loginInfo");
         MemberService.getInstance().updateMember(memberDto);
+        PostCache.getInstance().updateCache(memberInfo.getId(), memberDto.getName());
+        log.debug("cache = {}",PostCache.getInstance().getCacheList());
     }
 }

@@ -1,6 +1,7 @@
 package codesquad.javacafe.auth.controller;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import codesquad.javacafe.auth.service.AuthService;
 import codesquad.javacafe.common.SubController;
 import codesquad.javacafe.common.exception.ClientErrorCode;
 import codesquad.javacafe.member.service.MemberService;
+import codesquad.javacafe.post.service.PostService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,12 +33,16 @@ public class AuthController implements SubController {
 			}
 			case "POST": {
 				var body = req.getParameterMap();
+				if (body.isEmpty()) {
+					throw ClientErrorCode.PARAMETER_IS_NULL.customException("user parameter info = "+body);
+				}
 				var loginDto = new LoginRequestDto(body);
 				log.info("[AuthController doProcess] loginDto: {}", loginDto);
 				MemberInfo loginInfo = AuthService.getInstance().getLoginInfo(loginDto);
 				var session = req.getSession();
 				session.setAttribute("loginInfo", loginInfo);
 				session.setMaxInactiveInterval(30 * 60); // 세션 30분 설정
+
 
 				redirectMainPage(req, res);
 				break;
@@ -54,9 +60,9 @@ public class AuthController implements SubController {
 	}
 
 	public void redirectMainPage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		var memberList = MemberService.getInstance().getMemberList();
-		req.setAttribute("memberList", memberList);
-		var dispatcher = req.getRequestDispatcher("/WEB-INF/user/list.jsp");
+		var postList = PostService.getInstance().getAllPosts(1);
+		req.setAttribute("postList", postList);
+		var dispatcher = req.getRequestDispatcher("/WEB-INF/index.jsp");
 		dispatcher.forward(req, res);
 	}
 }

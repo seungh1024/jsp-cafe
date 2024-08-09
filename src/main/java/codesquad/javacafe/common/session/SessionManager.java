@@ -12,12 +12,22 @@ public class SessionManager {
 		return instance;
 	}
 
-	public void loginCheck(HttpServletRequest req, String key, String userId) {
+	public MemberInfo loginCheck(HttpServletRequest req, String key) {
 		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
+
 		if (memberInfo == null) {
 			throw ClientErrorCode.UNAUTHORIZED_USER.customException("Unauthorized user info = "+memberInfo);
-		} else if (!Objects.equals(memberInfo.getUserId(), userId)) {
-			throw ClientErrorCode.ACCESS_DENIED.customException("Access Denied User Info = "+memberInfo);
 		}
+		return memberInfo;
+	}
+
+	public String getMemberName(HttpServletRequest req, String key) {
+		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
+		return memberInfo.getName();
+	}
+
+	public long getMemberId(HttpServletRequest req, String key) {
+		var memberInfo = (MemberInfo)req.getSession().getAttribute(key);
+		return memberInfo.getId();
 	}
 }

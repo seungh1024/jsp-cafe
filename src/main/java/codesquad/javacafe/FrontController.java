@@ -1,9 +1,17 @@
 package codesquad.javacafe;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import codesquad.javacafe.common.exception.HttpStatus;
+import codesquad.javacafe.common.exception.ServerErrorCode;
+import codesquad.javacafe.post.controller.PostCreatePageController;
+import codesquad.javacafe.post.controller.PostPagingController;
+import codesquad.javacafe.post.controller.PostUpdatePageController;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +43,9 @@ public class FrontController extends HttpServlet {
 		subControllers.put("/users/info", new MemberInfoController());
 		subControllers.put("/post", new PostController());
 		subControllers.put("/auth", new AuthController());
+		subControllers.put("/post/page", new PostCreatePageController());
+		subControllers.put("/post/update", new PostUpdatePageController());
+		subControllers.put("/post/paging", new PostPagingController());
 	}
 
 	@Override
@@ -52,10 +63,15 @@ public class FrontController extends HttpServlet {
 			subController.doProcess(req, res);
 		} catch (CustomException exception) {
 			log.error("[CustomException] error name = {}, debug message = {}", exception.getErrorName(),
-				exception.getDebugMessage());
+					exception.getDebugMessage());
+
+			res.setStatus(exception.getHttpStatus().getStatusCode());
 			req.setAttribute("exception", exception);
 			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
 			try {
+				if (Objects.equals(exception.getHttpStatus(), HttpStatus.UNAUTHORIZED)) {
+					dispatcher = req.getRequestDispatcher("/user/login.jsp");
+				}
 				dispatcher.forward(req, res);
 			} catch (Exception e) {
 				log.error("[FrontController Dispatch Error] message = ", e.getMessage());
@@ -64,7 +80,18 @@ public class FrontController extends HttpServlet {
 			log.error("[ServletException] message = {}", exception.getMessage());
 		} catch (IOException exception) {
 			log.error("[IOException] message = {}", exception.getMessage());
-		}
+		} catch (Exception exception) {
+			log.error("[Exception] message = {}", exception.getMessage());
+			req.setAttribute("exception", ServerErrorCode.INTERNAL_SERVER_ERROR.customException("Server Error : "+exception.getMessage()));
+			var dispatcher = req.getRequestDispatcher("/WEB-INF/error/customError.jsp");
+			try{
+				dispatcher.forward(req, res);
+			} catch (ServletException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 	}
 
 	public void destroy() {

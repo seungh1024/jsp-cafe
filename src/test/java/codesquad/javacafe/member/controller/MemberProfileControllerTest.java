@@ -81,7 +81,7 @@ public class MemberProfileControllerTest {
         HttpServletResponse response = new CustomHttpServletResponse();
 
         ((CustomHttpServletRequest) request).setMethod("GET");
-        ((CustomHttpServletRequest) request).addParameter("userId","user1");
+        ((CustomHttpServletRequest) request).addParameter("userId",member.getId()+"");
 
         memberProfileController.doProcess(request, response);
 

@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
-                <li><a href="<%=contextPath%>/qna/form.jsp">글쓰기</a></li>
+                <li><a href="<%=contextPath%>/api/post/page">글쓰기</a></li>
                 <li><a href="/api/users">회원목록</a></li>
                 <li><a href="/api/users/info" role="button">회원정보수정</a></li>
                 <li><a href="#" role="button" id="logoutButton">로그아웃</a></li>
@@ -81,7 +81,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="/">Posts</a></li>
-                <li><a href="<%=contextPath%>/qna/form.jsp">글쓰기</a></li>
+                <li><a href="<%=contextPath%>/api/post/page">글쓰기</a></li>
                 <li><a href="/api/users">회원목록</a></li>
                 <li><a href="/api/auth" role="button">로그인</a></li>
                 <li><a href="/user/form.jsp" role="button">회원가입</a></li>

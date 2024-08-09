@@ -26,8 +26,9 @@ public class MemberInfo {
 	@Override
 	public String toString() {
 		return "MemberInfo{" +
-			"id=" + id +
-			", name='" + name + '\'' +
-			'}';
+				"id=" + id +
+				", userId='" + userId + '\'' +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

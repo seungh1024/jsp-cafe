@@ -1,6 +1,7 @@
 package codesquad.javacafe.common.exception;
 
 public enum HttpStatus {
+	OK(200, "OK"),
 	BAD_REQUEST(400, "BAD REQUEST"),
 	METHOD_NOT_ALLOWED(405,"METHOD NOT ALLOWED"),
 	URI_TOO_LONG(414,"URI TOO LONG"),

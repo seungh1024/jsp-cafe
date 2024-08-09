@@ -17,7 +17,9 @@
             <ul class="list">
                 <%
                     var postList = (List<PostResponseDto>) request.getAttribute("postList");
+
                     if (Objects.nonNull(postList)) {
+                        int row = 1;
                         for (PostResponseDto post : postList) {
                 %>
                 <li>
@@ -29,11 +31,11 @@
                             <div class="auth-info">
                                 <i class="icon-add-comment"></i>
                                 <span class="time"><%= post.getCreatedAt() %></span>
-                                <a href="<%= request.getContextPath() %>/user/profile.html" class="author"><%= post.getWriter() %></a>
+                                <a href="<%= request.getContextPath() %>/api/users/profile?userId=<%= post.getMemberId()%>" class="author"><%= post.getWriter()%></a>
                             </div>
                             <div class="reply" title="댓글">
                                 <i class="icon-reply"></i>
-                                <span class="point">8</span>
+                                <span class="point"><%=row++%></span>
                             </div>
                         </div>
                     </div>
@@ -47,17 +49,31 @@
                 <div class="col-md-3"></div>
                 <div class="col-md-6 text-center">
                     <ul class="pagination center-block" style="display:inline-block;">
-                        <li><a href="#">«</a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">»</a></li>
+                        <%
+                            var startPage = (int)request.getAttribute("startPage");
+                            var endPage = (int)request.getAttribute("endPage");
+                            if(startPage > 5){
+
+                        %>
+                        <li><a href="/api/post/paging?page=<%=startPage-1%>">«</a></li>
+                        <%
+                            }
+                            for(int i = startPage; i <= endPage; i++){
+                        %>
+                        <li><a href="/api/post/paging?page=<%=i%>"><%=i%></a></li>
+                        <%
+                            }
+                            var isEnd = (Boolean) request.getAttribute("isEnd");
+                            if(isEnd == null){
+                        %>
+                        <li><a href="/api/post/paging?page=<%=endPage+1%>">»</a></li>
+                        <%
+                            }
+                        %>
                     </ul>
                 </div>
                 <div class="col-md-3 qna-write">
-                    <a href="<%= request.getContextPath() %>/qna/form.jsp" class="btn btn-primary pull-right" role="button">질문하기</a>
+                    <a href="<%= request.getContextPath() %>/api/post/page" class="btn btn-primary pull-right" role="button">질문하기</a>
                 </div>
             </div>
         </div>

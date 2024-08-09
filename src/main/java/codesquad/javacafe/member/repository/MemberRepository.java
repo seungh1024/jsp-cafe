@@ -1,7 +1,6 @@
 package codesquad.javacafe.member.repository;
 
 
-import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.request.MemberUpdateRequestDto;
 import codesquad.javacafe.member.entity.Member;
 import org.slf4j.Logger;
@@ -24,8 +23,6 @@ public class MemberRepository {
 
     public void save(Member member) {
         log.debug("[Member] {}",member);
-
-
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -57,6 +54,7 @@ public class MemberRepository {
             if (rs.next()) {
                 pk = rs.getLong(1);
             }
+            member.setId(pk);
 
             log.debug("[Member Save] pk = {}",pk);
 
@@ -165,6 +163,40 @@ public class MemberRepository {
             ps.setString(4, memberDto.getOldPassword());
 
             return ps.executeUpdate();
+
+        } catch (SQLException exception) {
+            log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);
+            throw new RuntimeException(exception);
+        }finally {
+            close(con, ps, null);
+        }
+    }
+
+    public Member findById(long id) {
+        var sql = "select * from member where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                Member member = new Member();
+                member.setId(rs.getLong("id"));
+                member.setUserId(rs.getString("member_id"));
+                member.setPassword(rs.getString("member_password"));
+                member.setName(rs.getString("member_name"));
+
+                return member;
+            } else {
+                log.info("[MemberRepository] 사용자 정보가 없습니다.");
+                return null;
+            }
 
         } catch (SQLException exception) {
             log.error("[SQLException] throw error when findById, Class info = {}", MemberRepository.class);

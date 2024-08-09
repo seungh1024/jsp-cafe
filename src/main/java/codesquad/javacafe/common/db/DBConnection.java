@@ -15,7 +15,7 @@ public class DBConnection {
     private DBConnection(){}
     static{
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -23,7 +23,6 @@ public class DBConnection {
 
     public static Connection getConnection() {
         try {
-           // Class.forName("com.mysql.jdbc.Driver");
             var connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
             log.info("[Connection]  connection info = {}, class = {}", connection, connection.getClass());

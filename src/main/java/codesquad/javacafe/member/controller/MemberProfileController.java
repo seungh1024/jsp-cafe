@@ -17,14 +17,15 @@ public class MemberProfileController implements SubController {
 
     @Override
     public void doProcess(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        log.info("[MemberInfoController doProcess]");
+        log.info("[MemberProfileController doProcess]");
         var method = req.getMethod();
-        log.info("[MemberInfoController doProcess] method: {}", method);
+        log.info("[MemberProfileController doProcess] method: {}", method);
 
         switch (method) {
             case "GET" : {
-                var userId = req.getParameter("userId");
-                var memberInfo = memberService.getMemberInfo(userId);
+                var userId = Long.parseLong(req.getParameter("userId"));
+                log.debug("[MemberProfileController] rquest user id = {}",userId);
+                var memberInfo = memberService.getMemberById(userId);
                 req.setAttribute("memberInfo", memberInfo);
                 var dispatcher = req.getRequestDispatcher("/WEB-INF/user/profile.jsp");
                 dispatcher.forward(req, res);

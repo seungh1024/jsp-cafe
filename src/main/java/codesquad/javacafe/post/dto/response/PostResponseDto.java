@@ -1,5 +1,6 @@
 package codesquad.javacafe.post.dto.response;
 
+import codesquad.javacafe.post.dto.request.PostRequestDto;
 import codesquad.javacafe.post.entity.Post;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class PostResponseDto {
     private String title;
     private String contents;
     private LocalDateTime createdAt;
+    private long memberId;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -18,6 +20,7 @@ public class PostResponseDto {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.createdAt = post.getCreatedAt();
+        this.memberId = post.getMemberId();
     }
 
     public PostResponseDto(long id, String writer, String title, String contents, LocalDateTime createdAt) {
@@ -26,6 +29,12 @@ public class PostResponseDto {
         this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
+    }
+
+    public void update(PostRequestDto postRequestDto) {
+        this.id = postRequestDto.getId();
+        this.title = postRequestDto.getTitle();
+        this.contents = postRequestDto.getContents();
     }
 
     public long getId() {
@@ -48,6 +57,10 @@ public class PostResponseDto {
         return createdAt;
     }
 
+    public long getMemberId() {
+        return memberId;
+    }
+
     @Override
     public String toString() {
         return "PostResponseDto{" +
@@ -56,6 +69,7 @@ public class PostResponseDto {
                 ", title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
                 ", createdAt=" + createdAt +
+                ", memberId=" + memberId +
                 '}';
     }
 
@@ -70,5 +84,9 @@ public class PostResponseDto {
     @Override
     public int hashCode() {
         return Objects.hash(id, writer, title, contents, createdAt);
+    }
+
+    public void updateMemberName(String name) {
+        this.writer = name;
     }
 }

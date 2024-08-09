@@ -23,7 +23,7 @@
               <tbody>
                 <%
                     var members = (List<MemberResponseDto>) request.getAttribute("memberList");
-                    if (Objects.nonNull(members)) {
+                    if (Objects.nonNull(members) && members.size() > 0) {
                         int row = 1;
                         for(MemberResponseDto memberResponseDto : members) {
                 %>

@@ -1,6 +1,7 @@
 package codesquad.javacafe.member.controller;
 
 import codesquad.javacafe.common.db.DBConnection;
+import codesquad.javacafe.common.session.MemberInfo;
 import codesquad.javacafe.member.dto.request.MemberCreateRequestDto;
 import codesquad.javacafe.member.dto.response.MemberResponseDto;
 import codesquad.javacafe.member.repository.MemberRepository;
@@ -83,13 +84,13 @@ public class MemberInfoControllerTest {
 
         ((CustomHttpServletRequest) request).setMethod("GET");
         ((CustomHttpServletRequest) request).addParameter("userId", "user1");
+        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
         memberInfoController.doProcess(request, response);
 
         String userId = (String) request.getAttribute("userId");
-        System.out.println(userId);
         assertEquals("user1", userId);
-        assertEquals("/user/memberInfo.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
+        assertEquals("/WEB-INF/user/memberInfo.jsp", ((CustomHttpServletResponse) response).getForwardedUrl());
     }
 
     @Test
@@ -106,6 +107,7 @@ public class MemberInfoControllerTest {
         // Simulate POST request
         HttpServletRequest request = new CustomHttpServletRequest();
         HttpServletResponse response = new CustomHttpServletResponse();
+        request.getSession().setAttribute("loginInfo", new MemberInfo(1, "user1", "User One"));
 
         ((CustomHttpServletRequest) request).setMethod("POST");
         ((CustomHttpServletRequest) request).addParameter("userId", "user1");
